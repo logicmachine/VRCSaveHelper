@@ -1,12 +1,8 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
@@ -107,7 +103,7 @@ namespace VRCSaveHelper
             return IntPtr.Zero;
         }
 
-        private void OnClipboardUpdate()
+        private string GetClipboardText()
         {
             string data = "";
             for (int i = 0; i < 32; ++i)
@@ -123,6 +119,29 @@ namespace VRCSaveHelper
                 }
                 Thread.Sleep(5);
             }
+            return data;
+        }
+
+        private void SetClipboardText(string data)
+        {
+            for (int i = 0; i < 32; ++i)
+            {
+                try
+                {
+                    Clipboard.SetText(data);
+                    break;
+                }
+                catch (COMException e)
+                {
+                    if ((uint)e.ErrorCode != CLIPBRD_E_CANT_OPEN) throw;
+                }
+                Thread.Sleep(5);
+            }
+        }
+
+        private void OnClipboardUpdate()
+        {
+            string data = GetClipboardText();
             if (string.IsNullOrEmpty(data)) { return; }
 
             // Some apps (incl. VRChat) set NULL for clipboard owner.
@@ -138,6 +157,7 @@ namespace VRCSaveHelper
             if (world != null && world.AutoSave)
             {
                 world.History.Add(history);
+                _viewModel.SelectedHistory = history;
                 new ToastContentBuilder()
                     .AddText(world.Name)
                     .AddText("Saved: " + data)
@@ -231,25 +251,39 @@ namespace VRCSaveHelper
             if (history.Count > 0 && world.AutoLoad)
             {
                 var data = history[history.Count - 1].Data;
-                for (int i = 0; i < 32; ++i)
-                {
-                    try
-                    {
-                        Clipboard.SetText(data);
-                        break;
-                    }
-                    catch (COMException e)
-                    {
-                        if ((uint)e.ErrorCode != CLIPBRD_E_CANT_OPEN) throw;
-                    }
-                    Thread.Sleep(5);
-                }
+                SetClipboardText(data);
                 new ToastContentBuilder()
                     .AddText(world.Name)
                     .AddText("Copied: " + data)
                     .Show();
             }
             _viewModel.SelectedWorld = world;
+        }
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var world = _viewModel.SelectedWorld;
+            if (world == null) { return; }
+            var data = GetClipboardText();
+            if (string.IsNullOrEmpty(data)) { return; }
+            var history = new HistoryViewModel(-1, world.Id, DateTime.Now, data);
+            world.History.Add(history);
+            _viewModel.SelectedHistory = history;
+        }
+
+        private void CopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var history = _viewModel.SelectedHistory;
+            if (history == null) { return; }
+            SetClipboardText(history.Data);
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var world = _viewModel.SelectedWorld;
+            var history = _viewModel.SelectedHistory;
+            if (history == null || world == null) { return; }
+            world.History.Remove(history);
         }
     }
 }
