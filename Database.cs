@@ -166,6 +166,7 @@ namespace VRCSaveHelper
         private Database database;
         private ObservableCollection<WorldViewModel> worlds;
         private WorldViewModel? selectedWorld;
+        private HistoryViewModel? selectedHistory;
 
         public MainViewModel(Database database, IEnumerable<WorldViewModel> worlds)
         {
@@ -173,6 +174,7 @@ namespace VRCSaveHelper
             this.worlds = new ObservableCollection<WorldViewModel>(worlds);
             this.worlds.CollectionChanged += Worlds_CollectionChanged;
             this.selectedWorld = null;
+            this.selectedHistory = null;
         }
 
         private void Worlds_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -207,6 +209,17 @@ namespace VRCSaveHelper
             {
                 if (selectedWorld == value) { return; }
                 selectedWorld = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public HistoryViewModel? SelectedHistory
+        {
+            get { return selectedHistory; }
+            set
+            {
+                if (selectedHistory == value) { return; }
+                selectedHistory = value;
                 OnPropertyChanged();
             }
         }

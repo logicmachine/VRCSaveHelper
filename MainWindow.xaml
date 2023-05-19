@@ -7,11 +7,13 @@
         mc:Ignorable="d"
         Title="VRCSaveHelper" Height="450" Width="800"
         Loaded="Window_Loaded"  Unloaded="Window_Unloaded">
-    <Grid Grid.Row="5" Margin="8">
+    <Grid Margin="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="8"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="4"/>
@@ -27,7 +29,8 @@
 
         <ListView Grid.Row="2"
                   x:Name="HistoryListView"
-                  ItemsSource="{Binding SelectedWorld.History, Mode=OneWay}">
+                  ItemsSource="{Binding SelectedWorld.History, Mode=OneWay}"
+                  SelectedItem="{Binding SelectedHistory}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Timestamp" Width="150" DisplayMemberBinding="{Binding DisplayTimestamp}"></GridViewColumn>
@@ -36,7 +39,20 @@
             </ListView.View>
         </ListView>
 
-        <CheckBox Grid.Row="4" x:Name="AutoLoadCheckBox" IsChecked="{Binding SelectedWorld.AutoLoad}">Copy the latest data when you enter this world</CheckBox>
-        <CheckBox Grid.Row="6" x:Name="AutoSaveCheckBox" IsChecked="{Binding SelectedWorld.AutoSave}">Save the copied data when the clipboard is modified by this world</CheckBox>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" x:Name="ImportButton" Click="ImportButton_Click">Import from Clipboard</Button>
+            <Button Grid.Column="2" x:Name="CopyButton" Click="CopyButton_Click">Copy to Clipboard</Button>
+            <Button Grid.Column="4" x:Name="RemoveButton" Click="RemoveButton_Click">Remove Selected Data</Button>
+        </Grid>
+
+        <CheckBox Grid.Row="6" x:Name="AutoLoadCheckBox" IsChecked="{Binding SelectedWorld.AutoLoad}">Copy the latest data when you enter this world</CheckBox>
+        <CheckBox Grid.Row="8" x:Name="AutoSaveCheckBox" IsChecked="{Binding SelectedWorld.AutoSave}">Save the copied data when the clipboard is modified by this world</CheckBox>
     </Grid>
 </Window>
