@@ -34,7 +34,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Timestamp" Width="150" DisplayMemberBinding="{Binding DisplayTimestamp}"></GridViewColumn>
-                    <GridViewColumn Header="Data" Width="600" DisplayMemberBinding="{Binding Data}"></GridViewColumn>
+                    <GridViewColumn Header="Data" Width="600" DisplayMemberBinding="{Binding DisplayData}"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

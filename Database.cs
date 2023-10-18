@@ -49,6 +49,17 @@ namespace VRCSaveHelper
         {
             get { return data; }
         }
+
+        public string DisplayData
+        {
+            get
+            {
+                var limit = 500;
+                var tmp = data.Replace("\r", "").Replace("\n", "");
+                if (tmp.Length < limit) { return tmp; }
+                return tmp.Substring(0, limit) + "...";
+            }
+        }
     }
 
     public class WorldViewModel : INotifyPropertyChanged
