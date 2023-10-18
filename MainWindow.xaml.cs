@@ -160,7 +160,7 @@ namespace VRCSaveHelper
                 _viewModel.SelectedHistory = history;
                 new ToastContentBuilder()
                     .AddText(world.Name)
-                    .AddText("Saved: " + data)
+                    .AddText("Saved: " + history.DisplayData)
                     .Show();
             }
         }
@@ -250,11 +250,11 @@ namespace VRCSaveHelper
             var history = world.History;
             if (history.Count > 0 && world.AutoLoad)
             {
-                var data = history[history.Count - 1].Data;
-                SetClipboardText(data);
+                var item = history[history.Count - 1];
+                SetClipboardText(item.Data);
                 new ToastContentBuilder()
                     .AddText(world.Name)
-                    .AddText("Copied: " + data)
+                    .AddText("Copied: " + item.DisplayData)
                     .Show();
             }
             _viewModel.SelectedWorld = world;
